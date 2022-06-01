@@ -1,30 +1,23 @@
 #include "headers.h"
 
-/* Modify this file as needed*/
 int remainingtime;
 
-// void handleRemainingTime(){
-//     remainingtime--;
-// }
+void handleRemainingTime(){
+    remainingtime = 0;
+}
 
 int main(int agrc, char * argv[])
 {
     initClk();
-    
-    // signal(SIGUSR1, handleRemainingTime);
-    //TODO it needs to get the remaining time from somewhere
+    int x=getClk();
+    printf("Process started : id-> %d ",getpid());
+    signal(SIGUSR1, handleRemainingTime);
     remainingtime = atoi(argv[1]);
-    printf("\nrunning time: %d\n", remainingtime);
     while (remainingtime > 0)
     {
-        // remainingtime = ??;
         sleep(1);
-        kill(getppid(), SIGCONT);
-        remainingtime--;
     }
-    printf("\nProcess %d Terminated\n", getpid());
-    // kill(getppid(), SIGCONT);
+    printf("Process terminated : id-> %d ",getpid());    
     destroyClk(false);
-    
     return 0;
 }

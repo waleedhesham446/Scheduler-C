@@ -1,8 +1,10 @@
 
-#define SIZE 3            /* Size of Queue */
+#define SIZE 5            /* Size of Queue */
 int f=0,r=-1;       /* Global declarations */
+bool isCurrentRunning;
 
-Process PQ[SIZE];
+// Process PQ[SIZE];
+Process* PQ;
 
 int Qfull()
 {                     /* Function to Check Queue Full */
@@ -19,19 +21,40 @@ int Qempty()
 void PQinsert(Process elem, int pre)
 {
  int i;       /* Function for Insert operation */
- if( Qfull()) printf("nn Overflow!!!!nn");
- else
- {
+//  if( Qfull()) printf("nn Overflow!!!!nn");
+//  else
+//  {
   i=r;
   ++r;
-  while(PQ[i].runingTime >= pre && i >= 0) /* Find location for new elem */
+//   while(PQ[i].runingTime >= pre && i >= 0)
+  int limit = 1;
+  if(!isCurrentRunning) limit = 0;
+  while(PQ[i].priority >= pre && i >= limit) /* Find location for new elem */
   {
    PQ[i+1]=PQ[i];
    i--;
   }
   PQ[i+1] = elem;
- }
+//  }
 }
+void PQinsert2(Process elem, int pre)
+{
+ int i;       /* Function for Insert operation */
+//  if( Qfull()) printf("nn Overflow!!!!nn");
+//  else
+//  {
+  i=r;
+  ++r;
+   while(PQ[i].runingTime >= pre && i >= 0)
+//  while(PQ[i].priority >= pre && i >= 0) /* Find location for new elem */
+  {
+   PQ[i+1]=PQ[i];
+   i--;
+  }
+  PQ[i+1] = elem;
+//  }
+}
+
 
 Process PQdelete()
 {                      /* Function for Delete operation */
@@ -46,6 +69,14 @@ Process PQdelete()
  }
 }
 
+void dequeue(){
+    Process temp = PQ[0];
+    for(int i = 0; i < SIZE-1; i++){
+        PQ[i] = PQ[i+1];
+    }
+    PQ[SIZE-1] = temp;
+}
+
 void display()
 {                  /* Function to display status of Queue */
  int i;
@@ -57,4 +88,20 @@ void display()
    printf("[%d,%d] ",PQ[i].id,PQ[i].runingTime);
   printf("<-Rear");
  }
+}
+
+
+// Process waitingQ[SIZE];
+Process* waitingQ;
+int waitingFront = 0;
+int waitingBack = -1;
+
+void PQinsertWaiting(Process elem, int pre) {
+  int i = waitingBack;
+  ++waitingBack;
+  while(waitingQ[i].runingTime >= pre && i >= 0) {
+    waitingQ[i+1] = waitingQ[i];
+    i--;
+  }
+  waitingQ[i+1] = elem;
 }
